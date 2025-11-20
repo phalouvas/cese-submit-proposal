@@ -24,6 +24,9 @@ if ($step == 2) {
 } elseif ($step == 3) {
     echo $this->loadTemplate('step3');
     return;
+} elseif ($step === 'success' || $step == 4) {
+    echo $this->loadTemplate('success');
+    return;
 }
 
 // Step 1 - Proposal Type Selection

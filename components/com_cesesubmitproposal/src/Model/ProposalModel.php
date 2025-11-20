@@ -236,12 +236,16 @@ class ProposalModel extends BaseDatabaseModel
             return false;
         }
         
+        // Generate unique alias
+        $baseAlias = \Joomla\CMS\Filter\OutputFilter::stringURLSafe($title);
+        $alias = $baseAlias . '-' . time();
+        
         // Prepare article data for Joomla model
         $articleData = [
             'id' => 0,
             'catid' => $categoryId,
             'title' => $title,
-            'alias' => '',
+            'alias' => $alias,
             'introtext' => $content,
             'fulltext' => '',
             'state' => $params->get('article_state', 1),

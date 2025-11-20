@@ -185,7 +185,7 @@ class ProposalController extends BaseController
         ]);
         
         // Redirect to success page
-        $this->setRedirect(Route::_('index.php?option=com_cesesubmitproposal&view=main&layout=success', false));
+        $this->setRedirect(Route::_('index.php?option=com_cesesubmitproposal&view=main&step=success', false));
     }
 
     /**

@@ -91,8 +91,9 @@ class HtmlView extends BaseHtmlView
             ->registerAndUseStyle('com_cesesubmitproposal', 'media/com_cesesubmitproposal/css/proposal-form.css')
             ->registerAndUseScript('com_cesesubmitproposal', 'media/com_cesesubmitproposal/js/proposal-form.js');
         
-        // Get current step from URL
-        $this->step = $input->getInt('step', 1);
+        // Get current step from URL (can be numeric or 'success')
+        $stepParam = $input->get('step', 1);
+        $this->step = ($stepParam === 'success') ? 'success' : $input->getInt('step', 1);
         
         // Get session data
         $this->step1Data = $app->getUserState('com_cesesubmitproposal.step1', []);
