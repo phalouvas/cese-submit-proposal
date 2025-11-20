@@ -21,7 +21,6 @@
     <administration>
         <menu>COM_CESESUBMITPROPOSAL</menu>   
         <files folder="admin">
-            <filename>access.xml</filename>
             <filename>config.xml</filename>                        
             <filename>gpl-3.0.txt</filename>
             <folder>forms</folder>
