@@ -96,8 +96,9 @@ $submissionType = ucfirst($step2Data['submission_type'] ?? 'individual');
                 <!-- Honeypot field - hidden from users, bots will fill it -->
                 <input type="text" name="website" id="website" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off" aria-hidden="true">
                 
-                <!-- Timestamp for time-based spam protection -->
-                <input type="hidden" name="form_start_time" value="<?php echo time(); ?>">
+                <!-- Timestamp for time-based spam protection - use timestamp from step 2 data if available -->
+                <?php $formStartTime = !empty($step2Data['form_start_time']) ? $step2Data['form_start_time'] : time(); ?>
+                <input type="hidden" name="form_start_time" value="<?php echo $formStartTime; ?>">
                 
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="window.location.href='<?php echo Route::_('index.php?option=com_cesesubmitproposal&view=main&step=2'); ?>'">

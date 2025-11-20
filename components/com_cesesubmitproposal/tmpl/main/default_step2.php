@@ -24,6 +24,10 @@ $proposalType = $step1Data['proposal_type'] ?? 'working_group';
             
             <form action="<?php echo Route::_('index.php?option=com_cesesubmitproposal&task=proposal.saveStep2'); ?>" method="post" name="proposalForm" id="proposalForm" class="form-validate">
                 
+                <!-- Hidden timestamp field - preserve if exists, otherwise create new -->
+                <?php $formStartTime = !empty($step2Data['form_start_time']) ? $step2Data['form_start_time'] : time(); ?>
+                <input type="hidden" name="jform[form_start_time]" value="<?php echo $formStartTime; ?>">
+                
                 <?php
                 // Load appropriate template based on proposal type
                 if ($proposalType === 'working_group') {

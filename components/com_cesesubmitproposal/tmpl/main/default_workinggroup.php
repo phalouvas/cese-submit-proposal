@@ -27,7 +27,9 @@ $workingGroups = [
 <div class="working-group-selection mb-4">
     <select name="jform[working_group]" id="working_group" class="form-select" required>
         <?php foreach ($workingGroups as $value => $label) : ?>
-            <option value="<?php echo $value; ?>" <?php echo (($step2Data['working_group'] ?? '') === $value) ? 'selected' : ''; ?>>
+            <option value="<?php echo $value; ?>" 
+                    <?php echo (($step2Data['working_group'] ?? '') === $value) ? 'selected' : ''; ?>
+                    <?php echo ($value === '') ? 'disabled' : ''; ?>>
                 <?php echo $label; ?>
             </option>
         <?php endforeach; ?>

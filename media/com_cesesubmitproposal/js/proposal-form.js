@@ -76,52 +76,18 @@
      * Initialize author field toggle functionality
      */
     function initAuthorFieldToggle() {
-        // Show/hide additional author sections based on input
-        for (let i = 2; i <= 4; i++) {
+        // All author sections are visible by default
+        // This function is kept for future enhancements if needed
+        for (let i = 1; i <= 4; i++) {
             const authorSection = document.querySelector('.author-section:nth-of-type(' + i + ')');
             if (authorSection) {
-                const inputs = authorSection.querySelectorAll('input');
-                let hasValue = false;
-
-                inputs.forEach(function(input) {
-                    if (input.value.trim()) {
-                        hasValue = true;
-                    }
-                });
-
-                // Initially hide empty optional author sections
-                if (!hasValue && window.innerWidth > 768) {
-                    authorSection.style.display = 'none';
-                }
-
-                // Add toggle button for mobile/optional authors
-                if (i > 1) {
-                    addAuthorToggle(authorSection, i);
-                }
+                // Ensure all sections are visible
+                authorSection.style.display = 'block';
             }
         }
     }
 
-    /**
-     * Add toggle button for optional author sections
-     */
-    function addAuthorToggle(section, authorNum) {
-        const previousSection = section.previousElementSibling;
-        if (previousSection && previousSection.classList.contains('author-section')) {
-            const toggleBtn = document.createElement('button');
-            toggleBtn.type = 'button';
-            toggleBtn.className = 'btn btn-sm btn-outline-secondary mt-2 author-toggle';
-            toggleBtn.textContent = '+ Add Author ' + authorNum;
-            toggleBtn.onclick = function() {
-                section.style.display = section.style.display === 'none' ? 'block' : 'none';
-                toggleBtn.textContent = section.style.display === 'none' 
-                    ? '+ Add Author ' + authorNum 
-                    : '- Remove Author ' + authorNum;
-            };
 
-            previousSection.appendChild(toggleBtn);
-        }
-    }
 
     /**
      * Initialize submission type toggle

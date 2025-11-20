@@ -125,8 +125,8 @@ class ProposalModel extends BaseDatabaseModel
             return false;
         }
         
-        // Check if timestamp is too old (more than 1 hour)
-        if ($elapsedTime > 3600) {
+        // Check if timestamp is too old (more than 24 hours)
+        if ($elapsedTime > 86400) {
             Log::add('Spam detected: Form timestamp too old', Log::WARNING, 'com_cesesubmitproposal');
             return false;
         }
@@ -162,32 +162,26 @@ class ProposalModel extends BaseDatabaseModel
             }
         }
         
-        // Create "Proposals" category
-        $app = Factory::getApplication();
-        $categoryData = [
-            'title' => 'Proposals',
-            'alias' => 'proposals',
-            'extension' => 'com_content',
-            'parent_id' => 1,
-            'published' => 1,
-            'access' => 1,
-            'language' => '*',
-            'description' => 'Conference proposal submissions'
-        ];
+        // Check if "Proposals" category already exists
+        $db = $this->getDatabase();
+        $query = $db->getQuery(true)
+            ->select('id')
+            ->from($db->quoteName('#__categories'))
+            ->where($db->quoteName('title') . ' = ' . $db->quote('Proposals'))
+            ->where($db->quoteName('extension') . ' = ' . $db->quote('com_content'));
         
-        try {
-            $categoryModel = $app->bootComponent('com_categories')
-                ->getMVCFactory()
-                ->createModel('Category', 'Administrator', ['ignore_request' => true]);
-            
-            if ($categoryModel->save($categoryData)) {
-                return $categoryModel->getState('category.id');
-            }
-        } catch (\Exception $e) {
-            Log::add('Failed to create Proposals category: ' . $e->getMessage(), Log::ERROR, 'com_cesesubmitproposal');
+        $db->setQuery($query);
+        $existingId = $db->loadResult();
+        
+        if ($existingId) {
+            Log::add('Using existing Proposals category: ' . $existingId, Log::INFO, 'com_cesesubmitproposal');
+            return $existingId;
         }
         
-        return false;
+        // If no category exists, admin must configure one
+        // Return the Uncategorised category (id=2) as fallback
+        Log::add('No Proposals category found. Please configure category in component options or create a "Proposals" category. Using Uncategorised as fallback.', Log::WARNING, 'com_cesesubmitproposal');
+        return 2; // Uncategorised category
     }
 
     /**
@@ -216,40 +210,80 @@ class ProposalModel extends BaseDatabaseModel
         // Generate article title
         $title = $this->generateArticleTitle($data);
         
-        // Prepare article data
+        // Get a valid user ID (use first Super User as creator)
+        $db = $this->getDatabase();
+        $query = $db->getQuery(true)
+            ->select('u.id')
+            ->from($db->quoteName('#__users', 'u'))
+            ->join('LEFT', $db->quoteName('#__user_usergroup_map', 'ug') . ' ON ug.user_id = u.id')
+            ->where('ug.group_id = 8') // Super Users group
+            ->setLimit(1);
+        $db->setQuery($query);
+        $creatorId = (int) $db->loadResult();
+        
+        // Fallback to any user if no super user found
+        if (!$creatorId) {
+            $query = $db->getQuery(true)
+                ->select('id')
+                ->from($db->quoteName('#__users'))
+                ->where($db->quoteName('block') . ' = 0')
+                ->setLimit(1);
+            $db->setQuery($query);
+            $creatorId = (int) $db->loadResult();
+        }
+        
+        if (!$creatorId) {
+            return false;
+        }
+        
+        // Prepare article data for Joomla model
         $articleData = [
+            'id' => 0,
             'catid' => $categoryId,
             'title' => $title,
-            'alias' => '', // Auto-generated
+            'alias' => '',
             'introtext' => $content,
             'fulltext' => '',
             'state' => $params->get('article_state', 1),
             'access' => 1,
             'language' => '*',
-            'created_by' => 0, // Guest
+            'created_by' => $creatorId,
             'publish_up' => Factory::getDate()->toSql(),
-            'metadata' => [
-                'author' => '',
-                'robots' => ''
-            ],
+            'publish_down' => '',
+            'images' => '{}',
+            'urls' => '{}',
+            'attribs' => '{}',
+            'metadata' => ['robots' => '', 'author' => '', 'rights' => ''],
+            'metakey' => '',
+            'metadesc' => '',
             'featured' => 0
         ];
         
         try {
+            // Use Joomla article model
             $articleModel = $app->bootComponent('com_content')
                 ->getMVCFactory()
                 ->createModel('Article', 'Administrator', ['ignore_request' => true]);
             
             if ($articleModel->save($articleData)) {
-                return $articleModel->getState('article.id');
+                $articleId = $articleModel->getState('article.id');
+                return $articleId;
             }
             
-            Log::add('Failed to save article: ' . $articleModel->getError(), Log::ERROR, 'com_cesesubmitproposal');
+            // Get error messages
+            $errors = $articleModel->getErrors();
+            foreach ($errors as $error) {
+                if ($error instanceof \Exception) {
+                    Log::add('Article save error: ' . $error->getMessage(), Log::ERROR, 'com_cesesubmitproposal');
+                } else {
+                    Log::add('Article save error: ' . $error, Log::ERROR, 'com_cesesubmitproposal');
+                }
+            }
+            return false;
         } catch (\Exception $e) {
             Log::add('Exception creating article: ' . $e->getMessage(), Log::ERROR, 'com_cesesubmitproposal');
+            return false;
         }
-        
-        return false;
     }
 
     /**
@@ -379,7 +413,7 @@ class ProposalModel extends BaseDatabaseModel
         }
         
         $app = Factory::getApplication();
-        $config = $app->get('config');
+        $config = $app->getConfig();
         $siteName = $config->get('sitename');
         
         $mailer = Factory::getMailer();
@@ -435,7 +469,7 @@ class ProposalModel extends BaseDatabaseModel
         }
         
         $app = Factory::getApplication();
-        $config = $app->get('config');
+        $config = $app->getConfig();
         $siteName = $config->get('sitename');
         
         $mailer = Factory::getMailer();
@@ -538,7 +572,7 @@ class ProposalModel extends BaseDatabaseModel
         
         $html .= '<hr>';
         
-        $config = Factory::getApplication()->get('config');
+        $config = Factory::getApplication()->getConfig();
         $contactEmail = $config->get('mailfrom');
         $html .= '<p><em>' . Text::sprintf('COM_CESESUBMITPROPOSAL_EMAIL_CONFIRM_FOOTER', $contactEmail) . '</em></p>';
         
