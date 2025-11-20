@@ -20,6 +20,8 @@
 namespace KAINOTOMO\Component\Cesesubmitproposal\Administrator\View\Users;
 
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\Language\Text;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -43,6 +45,20 @@ class HtmlView extends BaseHtmlView
      */
     public function display($tpl = null)
     {
+        $this->addToolbar();
         parent::display($tpl);
+    }
+
+    /**
+     * Add the page title and toolbar.
+     *
+     * @return  void
+     *
+     * @since   1.0.0
+     */
+    protected function addToolbar()
+    {
+        ToolbarHelper::title(Text::_('COM_CESESUBMITPROPOSAL'), 'generic');
+        ToolbarHelper::preferences('com_cesesubmitproposal');
     }
 }
