@@ -26,10 +26,6 @@ $proposalTypeMap = [
 
 $proposalType = $proposalTypeMap[$step1Data['proposal_type']] ?? '';
 $submissionType = ucfirst($step2Data['submission_type'] ?? 'individual');
-
-// reCAPTCHA settings
-$recaptchaEnabled = $params->get('enable_recaptcha', 1);
-$recaptchaSiteKey = $params->get('recaptcha_site_key', '');
 ?>
 <div class="cesesubmitproposal">
     <div class="row">
@@ -97,12 +93,11 @@ $recaptchaSiteKey = $params->get('recaptcha_site_key', '');
             
             <form action="<?php echo Route::_('index.php?option=com_cesesubmitproposal&task=proposal.submit'); ?>" method="post" name="proposalForm" id="proposalForm">
                 
-                <?php if ($recaptchaEnabled && !empty($recaptchaSiteKey)) : ?>
-                    <div class="form-group mb-4">
-                        <div class="g-recaptcha" data-sitekey="<?php echo htmlspecialchars($recaptchaSiteKey); ?>"></div>
-                    </div>
-                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-                <?php endif; ?>
+                <!-- Honeypot field - hidden from users, bots will fill it -->
+                <input type="text" name="website" id="website" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off" aria-hidden="true">
+                
+                <!-- Timestamp for time-based spam protection -->
+                <input type="hidden" name="form_start_time" value="<?php echo time(); ?>">
                 
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="window.location.href='<?php echo Route::_('index.php?option=com_cesesubmitproposal&view=main&step=2'); ?>'">

@@ -23,35 +23,15 @@
         </field>
     </fieldset>
 
-    <fieldset name="recaptcha" label="COM_CESESUBMITPROPOSAL_CONFIG_RECAPTCHA_LABEL" description="COM_CESESUBMITPROPOSAL_CONFIG_RECAPTCHA_DESC">
+    <fieldset name="spam_protection" label="COM_CESESUBMITPROPOSAL_CONFIG_SPAM_PROTECTION_LABEL" description="COM_CESESUBMITPROPOSAL_CONFIG_SPAM_PROTECTION_DESC">
         <field
-            name="enable_recaptcha"
-            type="radio"
-            label="COM_CESESUBMITPROPOSAL_CONFIG_ENABLE_RECAPTCHA_LABEL"
-            description="COM_CESESUBMITPROPOSAL_CONFIG_ENABLE_RECAPTCHA_DESC"
-            default="1"
-            class="btn-group btn-group-yesno"
-        >
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </field>
-        
-        <field
-            name="recaptcha_site_key"
-            type="text"
-            label="COM_CESESUBMITPROPOSAL_CONFIG_RECAPTCHA_SITE_KEY_LABEL"
-            description="COM_CESESUBMITPROPOSAL_CONFIG_RECAPTCHA_SITE_KEY_DESC"
-            size="50"
-            showon="enable_recaptcha:1"
-        />
-        
-        <field
-            name="recaptcha_secret_key"
-            type="password"
-            label="COM_CESESUBMITPROPOSAL_CONFIG_RECAPTCHA_SECRET_KEY_LABEL"
-            description="COM_CESESUBMITPROPOSAL_CONFIG_RECAPTCHA_SECRET_KEY_DESC"
-            size="50"
-            showon="enable_recaptcha:1"
+            name="min_submission_time"
+            type="number"
+            label="COM_CESESUBMITPROPOSAL_CONFIG_MIN_SUBMISSION_TIME_LABEL"
+            description="COM_CESESUBMITPROPOSAL_CONFIG_MIN_SUBMISSION_TIME_DESC"
+            default="3"
+            min="1"
+            max="60"
         />
     </fieldset>
 

@@ -90,62 +90,48 @@ class ProposalModel extends BaseDatabaseModel
     }
 
     /**
-     * Verify reCAPTCHA response
+     * Verify spam protection (honeypot + time-based)
      *
-     * @param   string  $response  The reCAPTCHA response token
+     * @param   array  $data  The form data including honeypot and timestamp
      *
      * @return  boolean
      *
      * @since   1.0.0
      */
-    public function verifyCaptcha($response)
+    public function verifySpamProtection($data)
     {
+        // Check honeypot field - if filled, it's a bot
+        if (!empty($data['website'])) {
+            Log::add('Spam detected: Honeypot field filled', Log::WARNING, 'com_cesesubmitproposal');
+            return false;
+        }
+        
+        // Check time-based protection
         $params = ComponentHelper::getParams('com_cesesubmitproposal');
+        $minTime = $params->get('min_submission_time', 3); // Default 3 seconds
         
-        if (!$params->get('enable_recaptcha', 1)) {
-            return true; // Skip if disabled
-        }
-        
-        $secretKey = $params->get('recaptcha_secret_key');
-        
-        if (empty($secretKey)) {
-            Log::add('reCAPTCHA secret key not configured', Log::WARNING, 'com_cesesubmitproposal');
-            return true; // Allow if not configured
-        }
-        
-        if (empty($response)) {
+        if (empty($data['form_start_time'])) {
+            Log::add('Spam detected: Missing form start time', Log::WARNING, 'com_cesesubmitproposal');
             return false;
         }
         
-        $app = Factory::getApplication();
-        $remoteIp = $app->input->server->get('REMOTE_ADDR', '', 'string');
+        $startTime = (int) $data['form_start_time'];
+        $currentTime = time();
+        $elapsedTime = $currentTime - $startTime;
         
-        $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
-        $data = [
-            'secret' => $secretKey,
-            'response' => $response,
-            'remoteip' => $remoteIp
-        ];
-        
-        $options = [
-            'http' => [
-                'method' => 'POST',
-                'header' => 'Content-Type: application/x-www-form-urlencoded',
-                'content' => http_build_query($data)
-            ]
-        ];
-        
-        $context = stream_context_create($options);
-        $result = @file_get_contents($verifyUrl, false, $context);
-        
-        if ($result === false) {
-            Log::add('Failed to verify reCAPTCHA', Log::ERROR, 'com_cesesubmitproposal');
+        // Check if form was submitted too quickly (bot behavior)
+        if ($elapsedTime < $minTime) {
+            Log::add(sprintf('Spam detected: Form submitted too quickly (%d seconds)', $elapsedTime), Log::WARNING, 'com_cesesubmitproposal');
             return false;
         }
         
-        $resultJson = json_decode($result);
+        // Check if timestamp is too old (more than 1 hour)
+        if ($elapsedTime > 3600) {
+            Log::add('Spam detected: Form timestamp too old', Log::WARNING, 'com_cesesubmitproposal');
+            return false;
+        }
         
-        return isset($resultJson->success) && $resultJson->success === true;
+        return true;
     }
 
     /**

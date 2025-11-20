@@ -142,10 +142,14 @@ class ProposalController extends BaseController
         // Get model
         $model = $this->getModel('Proposal');
         
-        // Verify reCAPTCHA
-        $recaptchaResponse = $input->post->getString('g-recaptcha-response', '');
-        if (!$model->verifyCaptcha($recaptchaResponse)) {
-            $app->enqueueMessage(Text::_('COM_CESESUBMITPROPOSAL_ERROR_RECAPTCHA_FAILED'), 'error');
+        // Verify spam protection (honeypot + time-based)
+        $spamData = [
+            'website' => $input->post->getString('website', ''),
+            'form_start_time' => $input->post->getInt('form_start_time', 0)
+        ];
+        
+        if (!$model->verifySpamProtection($spamData)) {
+            $app->enqueueMessage(Text::_('COM_CESESUBMITPROPOSAL_ERROR_SPAM_DETECTED'), 'error');
             $this->setRedirect(Route::_('index.php?option=com_cesesubmitproposal&view=main&step=3', false));
             return;
         }
