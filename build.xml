@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2017 KAINOTOMO PH LTD <info@kainotomo.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or 
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!-- Run command: ant build -->
+<project name="cesesubmitproposal" default="build" basedir=".">
+    
+    <property name="destdir" value="${basedir}/build/cesesubmitproposal-pkg"/>
+    
+    <property name="old_version" value="1.0.0"/>
+    <property name="old_cdate" value="20-Nov-2025"/>
+    
+    <property name="version" value="1.0.0"/>
+    <property name="cdate" value="20-Nov-2025"/>
+    
+    <target name="build" description="Create an installable package for the ${name} project" >
+        <antcall target="fix_version_date"/>
+        <antcall target="clean"></antcall>        
+        <antcall target="component">
+            <param name="name" value="cesesubmitproposal"/>                         
+        </antcall>
+        <antcall target="package">
+            <param name="name" value="cesesubmitproposal"/>
+        </antcall>
+    </target>
+    
+    <target name="fix_version_date" description="Fix date and version in xml files">
+        
+        <replace file="${basedir}/administrator/manifests/packages/pkg_cesesubmitproposal.xml" summary="true">
+            <replacefilter token="${old_version}" value="${version}"/>
+            <replacefilter token="${old_cdate}" value="${cdate}"/>
+        </replace>
+        
+        <replace file="${basedir}/administrator/components/com_cesesubmitproposal/cesesubmitproposal.xml" summary="true">
+            <replacefilter token="${old_version}" value="${version}"/>
+            <replacefilter token="${old_cdate}" value="${cdate}"/>
+        </replace>
+        
+    </target>
+    
+    <target name="initialize" description="Delete destination folder" >
+        <echo message="Clean and create directory" />
+        <delete dir="${destdir}" includeemptydirs="true" failonerror="false" />
+        <mkdir dir="${destdir}" />
+    </target>
+    
+    <target name="clean" description="Delete destination folder" >
+        <echo message="Clean directory" />
+        <delete dir="${destdir}/packages/${version}" includeemptydirs="true" failonerror="false" />
+        <delete dir="${destdir}/staging" includeemptydirs="true" failonerror="false" />
+    </target>
+    
+    <target name="component" description="Create an installable package for the ${name} component" >
+        
+        <!-- Build component com_${name} -->
+        <echo message="Create com_${name} package" />
+        <property name="dir1" value="${destdir}/staging/com_${name}"/>
+        <echo message="Copy the admin folder" />
+        <copy todir="${dir1}/admin">
+            <fileset dir="${basedir}/administrator/components/com_${name}" />
+        </copy>
+        <move file="${dir1}/admin/${name}.xml" todir="${dir1}" />
+        <echo message="Copy the site folder" />
+        <copy todir="${dir1}/site">
+            <fileset dir="${basedir}/components/com_${name}" />
+        </copy>
+        <echo message="Copy language files" />
+        <copy file="${basedir}/administrator/language/en-GB/com_${name}.ini" tofile="${dir1}/language/admin/com_${name}.ini"/>
+        <copy file="${basedir}/administrator/language/en-GB/com_${name}.sys.ini" tofile="${dir1}/language/admin/com_${name}.sys.ini"/>
+        <copy file="${basedir}/language/en-GB/com_${name}.ini" tofile="${dir1}/language/site/com_${name}.ini"/>
+        
+        <echo message="Archiving package" />
+        <zip destfile="${destdir}/packages/${version}/com_${name}_${version}.zip" basedir="${dir1}" excludes=".svn"/>
+    </target>
+    
+    <target name="plugin" description="Create an installable package for the ${name} plugin" >
+        
+        <!-- Build plugin ${name} -->
+        <echo message="Create ${name} package" />
+        <property name="dir1" value="${destdir}/staging/${name}"/>
+        <echo message="Copy the admin folder" />
+        <copy todir="${dir1}">
+            <fileset dir="${basedir}/plugins/${group}/${name}" />
+        </copy>
+        <echo message="Copy language files" />
+        <copy file="${basedir}/administrator/language/en-GB/plg_${group}_${name}.ini" tofile="${dir1}/language/plg_${group}_${name}.ini"/>
+        <copy file="${basedir}/administrator/language/en-GB/plg_${group}_${name}.sys.ini" tofile="${dir1}/language/plg_${group}_${name}.sys.ini"/>
+        
+        <echo message="Archiving package" />
+        <zip destfile="${destdir}/packages/${version}/${name}_${version}.zip" basedir="${dir1}" excludes=".svn"/>
+    </target>
+    
+    <target name="library" description="Create an installable package for the ${name} library" >
+        <!-- Build library ${name} -->
+        <echo message="Create ${name} package" />
+        <property name="dir1" value="${destdir}/staging/${name}"/>
+        
+        <echo message="Copy the folder" />
+        <copy todir="${dir1}">
+            <fileset dir="${basedir}/libraries/${name}" />
+        </copy>
+        
+        <echo message="Copy language files" />
+        <copy file="${basedir}/language/en-GB/en-GB.lib_${name}.ini" tofile="${dir1}/language/en-GB.lib_${name}.ini"/>
+        
+        <echo message="Copy manifest file" />
+        <copy file="${basedir}/administrator/manifests/libraries/${name}.xml" tofile="${dir1}/${name}.xml"/>
+
+        <echo message="Copy the media folder" />
+        <copy todir="${dir1}/media/css">
+            <fileset dir="${basedir}/media/${name}/css" />
+        </copy>
+        <copy todir="${dir1}/media/images">
+            <fileset dir="${basedir}/media/${name}/images" />
+        </copy>
+        <copy todir="${dir1}/media/js">
+            <fileset dir="${basedir}/media/${name}/js" />
+        </copy>
+        <copy todir="${dir1}/media/swf">
+            <fileset dir="${basedir}/media/${name}/swf" />
+        </copy>
+        <copy todir="${dir1}/media/various">
+            <fileset dir="${basedir}/media/${name}/various" />
+        </copy>
+        
+        <echo message="Archiving package" />
+        <zip destfile="${destdir}/packages/${version}/${name}.zip" basedir="${dir1}" excludes=".svn"/>     
+    </target>
+    
+    <target name="package" description="Create package files">
+        <echo message="Create installation packages." />
+        <property name="pack_dir" value="${destdir}/packages/${version}"/>
+        <property name="tmp_dir" value="${pack_dir}/zip"/>
+        <property name="xml_dir" value="${basedir}/build/spstaging-xml"/>
+        
+        <echo message="Create tmp directory." />
+        <mkdir dir="${tmp_dir}"/>
+        <move todir="${tmp_dir}" verbose="${verbose}">
+            <fileset dir="${pack_dir}">
+                <include name="*.zip"/>
+                <exclude name="pkg*.zip"/>
+            </fileset>
+        </move>
+        <copy file="${basedir}/administrator/manifests/packages/pkg_${name}.xml" todir="${tmp_dir}" verbose="${verbose}"/>
+        
+        <!-- Normal Version -->
+        <echo message="Create package file." />
+        <zip destfile="${pack_dir}/pkg_${name}_${version}.zip" basedir="${tmp_dir}"/>
+        <copy file="${basedir}/administrator/manifests/packages/pkg_${name}.xml" tofile="${pack_dir}/pkg_${name}_${version}.zip.xml" verbose="${verbose}"/>
+        
+        <echo message="Delete tmp directory." />
+        <delete dir="${tmp_dir}" verbose="${verbose}"/>
+    </target>
+        
+    <target name="publish" description="Upload package files to kainotomo server.">
+        
+        <echo message="Uploading package files to server."/>
+        <property name="pack_dir" value="${destdir}/packages"/>
+        <property name="remote_folder" value="ph_impersonate"/>
+        
+        <ftp server="ftp.kainotomo.com"
+             remotedir="${remote_folder}"
+             userid="phrs@kainotomo.com"
+             password="-gybBQla@W4Q"
+             verbose="yes">
+            <fileset dir="${pack_dir}">
+                <include name="${version}\pkg_cesesubmitproposal_${version}.zip" />
+                <include name="${version}\pkg_cesesubmitproposal_${version}.zip.xml" />
+            </fileset>
+            <fileset dir="${destdir}/staging/com_cesesubmitproposal/admin">
+                <include name="CHANGELOG"/>
+            </fileset>
+        </ftp>
+        
+    </target>
+    
+</project>
