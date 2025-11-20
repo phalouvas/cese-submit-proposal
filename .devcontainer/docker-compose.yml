@@ -1,0 +1,29 @@
+version: '3.9'
+
+name: cesesubmitproposal
+
+services:
+            
+    joomla:
+        container_name: cesesubmitproposal
+        image: joomla:6
+        hostname: cesesubmitproposal
+        environment:
+            JOOMLA_DB_HOST: mariadb-database
+            JOOMLA_DB_NAME: cesesubmitproposal
+            JOOMLA_DB_USER: root
+            JOOMLA_DB_PASSWORD: pRep5v3Nzw_aMMV
+        ports:
+            - 8083:80
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.cesesubmitproposal.rule=Host(`cesesubmitproposal.kainotomo.localhost`)"
+            - "traefik.port=80"
+        volumes:
+            - ../:/var/www/html//:rw
+            - ./99-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+   
+networks:
+  default:
+    name: mariadb-network
+    external: true        

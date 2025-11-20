@@ -1,0 +1,23 @@
+{
+    "name": "Cese Submit Proposal",
+    "forwardPorts": [8083],
+    "remoteUser": "root",
+    "containerUser": "www-data",
+    "dockerComposeFile": "./docker-compose.yml",
+    "service": "joomla",
+    "workspaceFolder": "/var/www/html",
+    "shutdownAction": "stopCompose",
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "bmewburn.vscode-intelephense-client",
+          "donjayamanne.githistory",
+          "eamodio.gitlens",
+          "github.vscode-pull-request-github",
+          "github.copilot",
+          "github.copilot-chat"
+        ]
+      }
+    }
+  }
+  
