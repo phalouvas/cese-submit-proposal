@@ -12,11 +12,12 @@
     <namespace path="src">KAINOTOMO\Component\Cesesubmitproposal</namespace>
 
     <files folder="site">
-        <folder>src</folder>	
+        <folder>src</folder>
+        <folder>services</folder>
     </files>
+    
     <languages folder="language/site">
-        <language tag="en-GB">com_cesesubmitproposal.ini
-        </language>
+        <language tag="en-GB">com_cesesubmitproposal.ini</language>
     </languages>
     <administration>
         <menu>COM_CESESUBMITPROPOSAL</menu>   
