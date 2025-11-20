@@ -104,7 +104,7 @@ $submissionType = ucfirst($step2Data['submission_type'] ?? 'individual');
                     <button type="button" class="btn btn-secondary" onclick="window.location.href='<?php echo Route::_('index.php?option=com_cesesubmitproposal&view=main&step=2'); ?>'">
                         <?php echo Text::_('COM_CESESUBMITPROPOSAL_BTN_BACK'); ?>
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" id="finalSubmitBtn" class="btn btn-primary">
                         <?php echo Text::_('COM_CESESUBMITPROPOSAL_BTN_SUBMIT'); ?>
                     </button>
                 </div>
@@ -114,3 +114,17 @@ $submissionType = ucfirst($step2Data['submission_type'] ?? 'individual');
         </div>
     </div>
 </div>
+
+<script>
+(function() {
+    var form = document.getElementById('proposalForm');
+    if (!form) { return; }
+    form.addEventListener('submit', function() {
+        var btn = document.getElementById('finalSubmitBtn');
+        if (!btn) { return; }
+        btn.disabled = true;
+        btn.setAttribute('aria-disabled', 'true');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span><?php echo Text::_('COM_CESESUBMITPROPOSAL_BTN_SUBMITTING'); ?>';
+    });
+})();
+</script>
