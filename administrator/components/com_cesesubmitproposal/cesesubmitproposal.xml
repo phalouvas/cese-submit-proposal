@@ -23,7 +23,6 @@
         <files folder="admin">
             <filename>config.xml</filename>                        
             <filename>gpl-3.0.txt</filename>
-            <folder>forms</folder>
             <folder>helpers</folder>
             <folder>tmpl</folder>
             <folder>src</folder>
