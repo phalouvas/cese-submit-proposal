@@ -10,7 +10,7 @@ services:
         hostname: cesesubmitproposal
         environment:
             JOOMLA_DB_HOST: mariadb-database
-            JOOMLA_DB_NAME: cesesubmitproposal
+            JOOMLA_DB_NAME: jml_cese_submitproposal
             JOOMLA_DB_USER: root
             JOOMLA_DB_PASSWORD: pRep5v3Nzw_aMMV
         ports:
