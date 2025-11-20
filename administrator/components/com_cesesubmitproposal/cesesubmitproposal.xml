@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" method="upgrade" >
+    <name>com_cesesubmitproposal</name>
+    <creationDate>31-Oct-2025</creationDate>
+    <author>KAINOTOMO PH LTD</author>
+    <authorEmail>info@kainotomo.com</authorEmail>
+    <authorUrl>https://www.kainotomo.com</authorUrl>
+    <copyright>KAINOTOMO PH LTD - All rights reserved.</copyright>
+    <license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
+    <version>1.0.0</version>    
+    <description>Cese Submit Proposal</description>
+    <namespace path="src">KAINOTOMO\Component\Cesesubmitproposal</namespace>
+
+    <files folder="site">
+        <folder>src</folder>	
+    </files>
+    <languages folder="language/site">
+        <language tag="en-GB">com_cesesubmitproposal.ini
+        </language>
+    </languages>
+    <administration>
+        <menu>COM_CESESUBMITPROPOSAL</menu>   
+        <files folder="admin">
+            <filename>access.xml</filename>
+            <filename>config.xml</filename>                        
+            <filename>gpl-3.0.txt</filename>
+            <folder>forms</folder>
+            <folder>helpers</folder>
+            <folder>tmpl</folder>
+            <folder>src</folder>
+            <folder>services</folder>
+        </files>
+        <languages folder="language/admin">
+            <language tag="en-GB">com_cesesubmitproposal.ini</language>
+            <language tag="en-GB">com_cesesubmitproposal.sys.ini</language>
+        </languages>
+    </administration>
+        
+</extension>
