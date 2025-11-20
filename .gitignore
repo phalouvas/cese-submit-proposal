@@ -2,6 +2,8 @@
 
 !/.devcontainer
 
+!/.github
+
 !/nbproject
 /nbproject/private/
 

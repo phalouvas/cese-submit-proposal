@@ -17,6 +17,11 @@
         <folder>tmpl</folder>
     </files>
     
+    <media destination="com_cesesubmitproposal" folder="media">
+        <folder>css</folder>
+        <folder>js</folder>
+    </media>
+    
     <languages folder="language/site">
         <language tag="en-GB">com_cesesubmitproposal.ini</language>
     </languages>

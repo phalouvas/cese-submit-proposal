@@ -1,4 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
+    <fieldset name="general" label="COM_CESESUBMITPROPOSAL_CONFIG_GENERAL_LABEL" description="COM_CESESUBMITPROPOSAL_CONFIG_GENERAL_DESC">
+        <field
+            name="category_id"
+            type="category"
+            extension="com_content"
+            label="COM_CESESUBMITPROPOSAL_CONFIG_CATEGORY_LABEL"
+            description="COM_CESESUBMITPROPOSAL_CONFIG_CATEGORY_DESC"
+            default=""
+        />
+        
+        <field
+            name="article_state"
+            type="radio"
+            label="COM_CESESUBMITPROPOSAL_CONFIG_ARTICLE_STATE_LABEL"
+            description="COM_CESESUBMITPROPOSAL_CONFIG_ARTICLE_STATE_DESC"
+            default="1"
+            class="btn-group btn-group-yesno"
+        >
+            <option value="1">JPUBLISHED</option>
+            <option value="0">JUNPUBLISHED</option>
+        </field>
+    </fieldset>
 
+    <fieldset name="recaptcha" label="COM_CESESUBMITPROPOSAL_CONFIG_RECAPTCHA_LABEL" description="COM_CESESUBMITPROPOSAL_CONFIG_RECAPTCHA_DESC">
+        <field
+            name="enable_recaptcha"
+            type="radio"
+            label="COM_CESESUBMITPROPOSAL_CONFIG_ENABLE_RECAPTCHA_LABEL"
+            description="COM_CESESUBMITPROPOSAL_CONFIG_ENABLE_RECAPTCHA_DESC"
+            default="1"
+            class="btn-group btn-group-yesno"
+        >
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        
+        <field
+            name="recaptcha_site_key"
+            type="text"
+            label="COM_CESESUBMITPROPOSAL_CONFIG_RECAPTCHA_SITE_KEY_LABEL"
+            description="COM_CESESUBMITPROPOSAL_CONFIG_RECAPTCHA_SITE_KEY_DESC"
+            size="50"
+            showon="enable_recaptcha:1"
+        />
+        
+        <field
+            name="recaptcha_secret_key"
+            type="password"
+            label="COM_CESESUBMITPROPOSAL_CONFIG_RECAPTCHA_SECRET_KEY_LABEL"
+            description="COM_CESESUBMITPROPOSAL_CONFIG_RECAPTCHA_SECRET_KEY_DESC"
+            size="50"
+            showon="enable_recaptcha:1"
+        />
+    </fieldset>
+
+    <fieldset name="email" label="COM_CESESUBMITPROPOSAL_CONFIG_EMAIL_LABEL" description="COM_CESESUBMITPROPOSAL_CONFIG_EMAIL_DESC">
+        <field
+            name="enable_notifications"
+            type="radio"
+            label="COM_CESESUBMITPROPOSAL_CONFIG_ENABLE_NOTIFICATIONS_LABEL"
+            description="COM_CESESUBMITPROPOSAL_CONFIG_ENABLE_NOTIFICATIONS_DESC"
+            default="1"
+            class="btn-group btn-group-yesno"
+        >
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        
+        <field
+            name="admin_email"
+            type="email"
+            label="COM_CESESUBMITPROPOSAL_CONFIG_ADMIN_EMAIL_LABEL"
+            description="COM_CESESUBMITPROPOSAL_CONFIG_ADMIN_EMAIL_DESC"
+            size="50"
+            required="false"
+            showon="enable_notifications:1"
+        />
+        
+        <field
+            name="email_subject_prefix"
+            type="text"
+            label="COM_CESESUBMITPROPOSAL_CONFIG_EMAIL_SUBJECT_PREFIX_LABEL"
+            description="COM_CESESUBMITPROPOSAL_CONFIG_EMAIL_SUBJECT_PREFIX_DESC"
+            default="New Proposal Submission"
+            size="50"
+            showon="enable_notifications:1"
+        />
+        
+        <field
+            name="enable_confirmation_email"
+            type="radio"
+            label="COM_CESESUBMITPROPOSAL_CONFIG_ENABLE_CONFIRMATION_EMAIL_LABEL"
+            description="COM_CESESUBMITPROPOSAL_CONFIG_ENABLE_CONFIRMATION_EMAIL_DESC"
+            default="1"
+            class="btn-group btn-group-yesno"
+            showon="enable_notifications:1"
+        >
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+    </fieldset>
 </config>
