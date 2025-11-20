@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * Copyright (C) 2018 KAINOTOMO PH LTD <info@kainotomo.com>
  *
@@ -17,13 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace KAINOTOMO\Component\Cesesubmitproposal\Administrator\View\Users;
+namespace KAINOTOMO\Component\Cesesubmitproposal\Site\View\Main;
+
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
-
-// phpcs:disable PSR1.Files.SideEffects
-\defined('_JEXEC') or die;
-// phpcs:enable PSR1.Files.SideEffects
 
 /**
  * View class for cesesubmitproposal component.

@@ -20,26 +20,20 @@ namespace KAINOTOMO\Component\Cesesubmitproposal\Site\Controller;
 
 \defined('_JEXEC') or die;
 
-use Exception;
-use Joomla\CMS\Authentication\Authentication;
-use Joomla\CMS\Authentication\AuthenticationResponse;
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Router\Route;
-use Joomla\CMS\User\User;
-use PlgUserJoomla;
-use RuntimeException;
 
 /**
- * Spdigitalsubs Component Controller
+ * Cesesubmitproposal Component Controller
  *
- * @since  1.5
+ * @since  1.0.0
  */
 class DisplayController extends BaseController
 {
-	
+    /**
+     * The default view.
+     *
+     * @var    string
+     * @since  1.0.0
+     */
+    protected $default_view = 'main';
 }

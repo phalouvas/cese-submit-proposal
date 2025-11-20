@@ -10,5 +10,10 @@
 
 defined('_JEXEC') or die;
 ?>
-
-<p>Hello World</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>CESE Submit Proposal - Backend</h2>
+        </div>
+    </div>
+</div>

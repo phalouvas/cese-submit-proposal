@@ -26,8 +26,6 @@ use Joomla\CMS\Extension\MVCComponent;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Fields\FieldsServiceInterface;
 use Joomla\CMS\HTML\HTMLRegistryAwareTrait;
-use KAINOTOMO\Component\Cesesubmitproposal\Administrator\Service\HTML\AdministratorService;
-use KAINOTOMO\Component\Cesesubmitproposal\Administrator\Service\HTML\Users;
 use Psr\Container\ContainerInterface;
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -59,7 +57,7 @@ class CesesubmitproposalComponent extends MVCComponent implements BootableExtens
      */
     public function boot(ContainerInterface $container)
     {
-        $this->getRegistry()->register('users', new Users());
+        
     }
 
     /**
