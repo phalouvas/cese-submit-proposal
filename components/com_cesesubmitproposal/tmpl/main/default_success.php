@@ -29,14 +29,6 @@ $authorEmail = $successData['author_email'] ?? '';
                 <?php if ($articleId > 0) : ?>
                     <p><?php echo Text::sprintf('COM_CESESUBMITPROPOSAL_SUCCESS_ARTICLE_ID', $articleId); ?></p>
                 <?php endif; ?>
-                
-                <hr>
-                
-                <p class="mb-0">
-                    <a href="<?php echo Route::_('index.php'); ?>" class="btn btn-primary">
-                        <?php echo Text::_('JGLOBAL_HOMEPAGE'); ?>
-                    </a>
-                </p>
             </div>
         </div>
     </div>
