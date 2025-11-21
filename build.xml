@@ -24,8 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <property name="old_version" value="1.0.0"/>
     <property name="old_cdate" value="20-Nov-2025"/>
     
-    <property name="version" value="1.0.0"/>
-    <property name="cdate" value="20-Nov-2025"/>
+    <property name="version" value="1.0.1"/>
+    <property name="cdate" value="21-Nov-2025"/>
     
     <target name="build" description="Create an installable package for the ${name} project" >
         <antcall target="fix_version_date"/>
@@ -82,6 +82,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <copy file="${basedir}/administrator/language/en-GB/com_${name}.ini" tofile="${dir1}/language/admin/com_${name}.ini"/>
         <copy file="${basedir}/administrator/language/en-GB/com_${name}.sys.ini" tofile="${dir1}/language/admin/com_${name}.sys.ini"/>
         <copy file="${basedir}/language/en-GB/com_${name}.ini" tofile="${dir1}/language/site/com_${name}.ini"/>
+        <echo message="Copy media files" />
+        <copy todir="${dir1}/media">
+            <fileset dir="${basedir}/media/com_${name}" />
+        </copy>
         
         <echo message="Archiving package" />
         <zip destfile="${destdir}/packages/${version}/com_${name}_${version}.zip" basedir="${dir1}" excludes=".svn"/>
