@@ -22,7 +22,10 @@ $proposalType = $step1Data['proposal_type'] ?? 'working_group';
         <div class="col-12">
             <p class="alert alert-info"><?php echo Text::_('COM_CESESUBMITPROPOSAL_AUTHORS_INFO'); ?></p>
             
-            <form action="<?php echo Route::_('index.php?option=com_cesesubmitproposal&task=proposal.saveStep2'); ?>" method="post" name="proposalForm" id="proposalForm" class="form-validate">
+            <form action="<?php echo Route::_('index.php?option=com_cesesubmitproposal&view=main'); ?>" method="post" name="proposalForm" id="proposalForm" class="form-validate">
+                
+                <!-- Hidden task field for proper routing -->
+                <input type="hidden" name="task" value="proposal.saveStep2">
                 
                 <!-- Hidden timestamp field - preserve if exists, otherwise create new -->
                 <?php $formStartTime = !empty($step2Data['form_start_time']) ? $step2Data['form_start_time'] : time(); ?>
@@ -71,13 +74,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const submissionTypeRadios = document.querySelectorAll('input[name="jform[submission_type]"]');
     submissionTypeRadios.forEach(function(radio) {
         radio.addEventListener('change', function() {
-            // Reload the page with the selected submission type
             const form = document.getElementById('proposalForm');
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'reload';
-            input.value = '1';
-            form.appendChild(input);
+            
+            // Create hidden field for reload
+            const reloadInput = document.createElement('input');
+            reloadInput.type = 'hidden';
+            reloadInput.name = 'reload';
+            reloadInput.value = '1';
+            form.appendChild(reloadInput);
+            
+            // Submit the form
             form.submit();
         });
     });

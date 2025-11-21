@@ -29,25 +29,6 @@ $step2Data = $this->getStep2Data();
     </div>
 </div>
 
-<h3><?php echo Text::_('COM_CESESUBMITPROPOSAL_PANEL_TITLE'); ?></h3>
-
-<div class="panel-info mb-4">
-    <div class="mb-3">
-        <input type="text" name="jform[panel_title]" 
-               class="form-control" 
-               placeholder="<?php echo Text::_('COM_CESESUBMITPROPOSAL_TITLE_LABEL'); ?>"
-               value="<?php echo htmlspecialchars($step2Data['panel_title'] ?? ''); ?>"
-               required>
-    </div>
-    <div class="mb-3">
-        <textarea name="jform[panel_summary]" 
-                  class="form-control" 
-                  rows="5"
-                  placeholder="<?php echo Text::_('COM_CESESUBMITPROPOSAL_SUMMARY_LABEL'); ?>"
-                  required><?php echo htmlspecialchars($step2Data['panel_summary'] ?? ''); ?></textarea>
-    </div>
-</div>
-
 <h3><?php echo Text::_('COM_CESESUBMITPROPOSAL_ABSTRACT_TITLE'); ?></h3>
 
 <!-- Authors 1-4 -->

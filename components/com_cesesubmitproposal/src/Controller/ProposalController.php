@@ -87,6 +87,15 @@ class ProposalController extends BaseController
         // Get all form data
         $data = $input->post->get('jform', [], 'array');
         
+        // Check if this is a reload (changing submission type)
+        $reload = $input->post->get('reload', 0, 'int');
+        if ($reload) {
+            // Save data without validation and redirect back to step 2 to show the new form
+            $app->setUserState('com_cesesubmitproposal.step2', $data);
+            $this->setRedirect(Route::_('index.php?option=com_cesesubmitproposal&view=main&step=2', false));
+            return;
+        }
+        
         // Get model
         $model = $this->getModel('Proposal');
         
