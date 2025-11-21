@@ -60,16 +60,40 @@ class ProposalModel extends BaseDatabaseModel
     {
         $errors = [];
         
+        // Determine submission type
+        $submissionType = $data['submission_type'] ?? 'individual';
+        
         // Check if at least one author is provided
         $hasAuthor = false;
-        for ($i = 1; $i <= 4; $i++) {
-            if (!empty($data['author' . $i . '_name']) || !empty($data['author' . $i . '_surname']) || 
-                !empty($data['author' . $i . '_email'])) {
-                $hasAuthor = true;
-                
-                // If any author field is filled, validate email
-                if (!empty($data['author' . $i . '_email']) && !MailHelper::isEmailAddress($data['author' . $i . '_email'])) {
-                    $errors[] = Text::sprintf('COM_CESESUBMITPROPOSAL_ERROR_INVALID_EMAIL');
+        
+        if ($submissionType === 'group') {
+            // For group submissions (panel/session), check abstract1_author1
+            for ($i = 1; $i <= 4; $i++) {
+                if (!empty($data['abstract1_author' . $i . '_name']) || 
+                    !empty($data['abstract1_author' . $i . '_surname']) || 
+                    !empty($data['abstract1_author' . $i . '_email'])) {
+                    $hasAuthor = true;
+                    
+                    // If any author field is filled, validate email
+                    if (!empty($data['abstract1_author' . $i . '_email']) && 
+                        !MailHelper::isEmailAddress($data['abstract1_author' . $i . '_email'])) {
+                        $errors[] = Text::sprintf('COM_CESESUBMITPROPOSAL_ERROR_INVALID_EMAIL');
+                    }
+                }
+            }
+        } else {
+            // For individual submissions, check author1
+            for ($i = 1; $i <= 4; $i++) {
+                if (!empty($data['author' . $i . '_name']) || 
+                    !empty($data['author' . $i . '_surname']) || 
+                    !empty($data['author' . $i . '_email'])) {
+                    $hasAuthor = true;
+                    
+                    // If any author field is filled, validate email
+                    if (!empty($data['author' . $i . '_email']) && 
+                        !MailHelper::isEmailAddress($data['author' . $i . '_email'])) {
+                        $errors[] = Text::sprintf('COM_CESESUBMITPROPOSAL_ERROR_INVALID_EMAIL');
+                    }
                 }
             }
         }
@@ -302,7 +326,17 @@ class ProposalModel extends BaseDatabaseModel
     protected function generateArticleTitle($data)
     {
         $proposalType = ucwords(str_replace('_', ' ', $data['proposal_type']));
-        $firstAuthorSurname = !empty($data['author1_surname']) ? $data['author1_surname'] : 'Unknown';
+        
+        // Determine first author surname based on submission type
+        $submissionType = $data['submission_type'] ?? 'individual';
+        if ($submissionType === 'group') {
+            // For group submissions, get author from abstract1_author1_surname
+            $firstAuthorSurname = !empty($data['abstract1_author1_surname']) ? $data['abstract1_author1_surname'] : 'Unknown';
+        } else {
+            // For individual submissions, get author from author1_surname
+            $firstAuthorSurname = !empty($data['author1_surname']) ? $data['author1_surname'] : 'Unknown';
+        }
+        
         $abstractTitle = !empty($data['abstract1_title']) ? $data['abstract1_title'] : 'Untitled';
         
         return $proposalType . ' - ' . $firstAuthorSurname . ' - ' . $abstractTitle;
