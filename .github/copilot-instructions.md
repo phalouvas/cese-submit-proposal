@@ -1,7 +1,20 @@
 # Copilot Instructions for Cese Submit Proposal
 
 ## Project Overview
-This is a **Joomla 6 component** (`com_cesesubmitproposal`) developed by KAINOTOMO PH LTD. The project runs in a dev container (Debian) with PHP, MariaDB, and Apache. The workspace root is a full Joomla 6 installation at `/var/www/html`.
+This is a **Joomla 6 component** (`com_cesesubmitproposal`) developed by KAINOTOMO PH LTD for conference proposal submissions. The project runs in a dev container (Debian) with PHP, MariaDB, and Apache. The workspace root is a full Joomla 6 installation at `/var/www/html`.
+
+### Component Features
+- **Multi-step form system** (3 steps): Proposal type selection → Detailed form → Summary/Submit
+- **Three proposal types**:
+  - Working Group submissions
+  - Thematically-focused Panel (Individual or Group)
+  - Cross-thematic Session (Individual or Group)
+- **Group submissions**: Support up to 4 abstracts, each with up to 4 authors
+- **Individual submissions**: Single abstract with up to 4 authors
+- **Spam protection**: Honeypot field + time-based validation (configurable 3-86400 seconds)
+- **Email notifications**: Admin notification + submitter confirmation (confirmation sent only to first author)
+- **Article creation**: Saves submissions as published Joomla articles in "Proposals" category
+- **Unique aliases**: Timestamp-based to prevent duplicates
 
 ## Architecture
 
@@ -64,10 +77,48 @@ The `pkg_cesesubmitproposal.xml` at `administrator/manifests/packages/` defines 
 - Files already exist in Joomla folders; installer will overwrite on upgrade
 - Only run `ant build` when ready to create release package
 
+### Key Implementation Files
+**Frontend (Site):**
+- `components/com_cesesubmitproposal/src/Controller/ProposalController.php` - Handles form submission flow
+  - `saveStep2()` - Saves step 2 data, handles submission type switching (reload parameter)
+  - `submit()` - Final submission, spam check, article creation, emails
+- `components/com_cesesubmitproposal/src/Model/ProposalModel.php` - Business logic
+  - `validateStep2()` - Validates based on submission type (individual vs group)
+  - `createProposalArticle()` - Uses Joomla article model, generates unique alias
+  - `generateArticleTitle()` - Format: `[Type] - [FirstAuthorSurname] - [AbstractTitle]`
+  - `verifySpamProtection()` - Honeypot + time-based checks
+  - `sendAdminNotificationEmail()` - To configured admin email
+  - `sendConfirmationEmail()` - To first author only (author1_email or abstract1_author1_email)
+- `components/com_cesesubmitproposal/tmpl/main/` - View templates
+  - `default_step1.php` - Proposal type selection
+  - `default_step2.php` - Loads appropriate sub-template based on proposal type
+  - `default_workinggroup.php` - Working group form
+  - `default_panel_individual.php` - Panel individual (no panel title/summary section)
+  - `default_panel_group.php` - Panel group (includes panel title/summary + 4 abstracts)
+  - `default_session_individual.php` - Session individual
+  - `default_session_group.php` - Session group (includes session title/summary + 4 abstracts)
+  - `default_step3.php` - Summary and submit (with spinner on button)
+  - `default_success.php` - Confirmation page
+
+**Backend (Administrator):**
+- `administrator/components/com_cesesubmitproposal/config.xml` - Component configuration
+  - `enable_notifications` - Toggle email notifications
+  - `admin_email` - Recipient for admin notifications
+  - `enable_confirmation_email` - Toggle confirmation emails
+  - `email_subject_prefix` - Prefix for admin email subjects
+  - `min_submission_time` - Spam protection timing (default 3 seconds)
+
 ### Language Files
 Located at:
 - Backend: `administrator/language/en-GB/com_cesesubmitproposal.ini`, `.sys.ini`
 - Frontend: `language/en-GB/com_cesesubmitproposal.ini`
+
+### Form Data Structure
+**Individual Submissions:** `author[1-4]_name`, `author[1-4]_surname`, `author[1-4]_email`, `author[1-4]_affiliation`, `abstract1_title`, `abstract1_details`
+
+**Group Submissions:** `panel_title`, `panel_summary`, `abstract[1-4]_author[1-4]_name`, `abstract[1-4]_author[1-4]_surname`, etc.
+
+**Session Management:** Data stored in `com_cesesubmitproposal.step1`, `com_cesesubmitproposal.step2`, `com_cesesubmitproposal.success`
 
 ## Joomla 6 Component Requirements
 
@@ -80,6 +131,11 @@ Located at:
 - **Whitespace in XML**: Language tags must not have newlines: `<language tag="en-GB">file.ini</language>` (not split across lines)
 - **Missing service providers**: Both backend and frontend need `services/provider.php` or install fails with "Can't find XML setup file"
 - **Router service**: Frontend needs `src/Service/Router.php` for SEF URL support
+- **SEF URLs and task parameter**: Form action should use `Route::_()` for URL but task must be sent as POST hidden field (`<input type="hidden" name="task" value="proposal.saveStep2">`) to work with SEF URLs
+- **Submission type switching**: When radio buttons change submission type, add `reload=1` parameter to skip validation and redirect back to step 2
+- **Validation differences**: Individual vs Group submissions have different field names - validation must check `submission_type` to validate correct fields
+- **Article title generation**: Must check `submission_type` to get author from correct field (`author1_surname` for individual, `abstract1_author1_surname` for group)
+- **Email recipients**: Confirmation email only to first author, determined by submission type
 
 ## Testing
 - Install component from Joomla backend: Extensions → Install → Upload Package File
