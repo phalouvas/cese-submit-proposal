@@ -59,7 +59,7 @@ $submissionType = ucfirst($step2Data['submission_type'] ?? 'individual');
                                     'wg3' => Text::_('COM_CESESUBMITPROPOSAL_WG3'),
                                     'wg4' => Text::_('COM_CESESUBMITPROPOSAL_WG4'),
                                     'wg5' => Text::_('COM_CESESUBMITPROPOSAL_WG5'),
-                                    'wg_new' => Text::_('COM_CESESUBMITPROPOSAL_WG_NEW_SCHOLARS')
+                                    'wg_new' => Text::_('COM_CESESUBMITPROPOSAL_WG6')
                                 ];
                                 echo $wgMap[$step2Data['working_group']] ?? $step2Data['working_group'];
                                 ?>
