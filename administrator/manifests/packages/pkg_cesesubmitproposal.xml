@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension type="package" method="upgrade" element="pkg_cesesubmitproposal">
   <name>Cese Submit Proposal Package</name>
-  <creationDate>21-Nov-2025</creationDate>
+  <creationDate>22-Nov-2025</creationDate>
   <author>KAINOTOMO PH LTD</author>
   <authorEmail>info@kainotomo.com</authorEmail>
   <authorUrl>https://www.kainotomo.com</authorUrl>
   <copyright>KAINOTOMO PH LTD - All rights reserved.</copyright>
   <license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
   <packagename>cesesubmitproposal</packagename>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <url>https://www.kainotomo.com/</url>
   <packager>KAINOTOMO PH LTD</packager>
   <packagerurl>https://www.kainotomo.com/</packagerurl>
   <description>Cese Submit Proposal Component</description>
   <files>
-    <file type="component" id="com_cesesubmitproposal">com_cesesubmitproposal_1.0.2.zip</file>
+    <file type="component" id="com_cesesubmitproposal">com_cesesubmitproposal_1.0.3.zip</file>
   </files>
   <blockChildUninstall>1</blockChildUninstall>
 </extension>
