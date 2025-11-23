@@ -59,7 +59,8 @@ $submissionType = ucfirst($step2Data['submission_type'] ?? 'individual');
                                     'wg3' => Text::_('COM_CESESUBMITPROPOSAL_WG3'),
                                     'wg4' => Text::_('COM_CESESUBMITPROPOSAL_WG4'),
                                     'wg5' => Text::_('COM_CESESUBMITPROPOSAL_WG5'),
-                                    'wg_new' => Text::_('COM_CESESUBMITPROPOSAL_WG6')
+                                    'WG6' => Text::_('COM_CESESUBMITPROPOSAL_WG6'),
+                                    'WG7' => Text::_('COM_CESESUBMITPROPOSAL_WG7')
                                 ];
                                 echo $wgMap[$step2Data['working_group']] ?? $step2Data['working_group'];
                                 ?>
@@ -80,11 +81,18 @@ $submissionType = ucfirst($step2Data['submission_type'] ?? 'individual');
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-4"><strong><?php echo Text::_('COM_CESESUBMITPROPOSAL_AUTHOR_LABEL'); ?> 1:</strong></div>
+                        <?php
+                        $submissionTypeRaw = $step2Data['submission_type'] ?? 'individual';
+                        $isGroup = ($submissionTypeRaw === 'group');
+                        $firstName = $isGroup ? ($step2Data['abstract1_author1_name'] ?? '') : ($step2Data['author1_name'] ?? '');
+                        $firstSurname = $isGroup ? ($step2Data['abstract1_author1_surname'] ?? '') : ($step2Data['author1_surname'] ?? '');
+                        $firstEmail = $isGroup ? ($step2Data['abstract1_author1_email'] ?? '') : ($step2Data['author1_email'] ?? '');
+                        ?>
+                        <div class="col-md-4"><strong><?php echo Text::sprintf('COM_CESESUBMITPROPOSAL_AUTHOR_LABEL', 1); ?>:</strong></div>
                         <div class="col-md-8">
-                            <?php echo htmlspecialchars($step2Data['author1_name'] ?? '') . ' ' . htmlspecialchars($step2Data['author1_surname'] ?? ''); ?><br>
-                            <?php if (!empty($step2Data['author1_email'])) : ?>
-                                <?php echo htmlspecialchars($step2Data['author1_email']); ?>
+                            <?php echo htmlspecialchars($firstName) . ' ' . htmlspecialchars($firstSurname); ?><br>
+                            <?php if (!empty($firstEmail)) : ?>
+                                <?php echo htmlspecialchars($firstEmail); ?>
                             <?php endif; ?>
                         </div>
                     </div>

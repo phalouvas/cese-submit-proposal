@@ -19,6 +19,7 @@ use Joomla\CMS\Mail\MailHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Component\Content\Site\Helper\RouteHelper;
 
 /**
  * Proposal Model
@@ -387,7 +388,8 @@ class ProposalModel extends BaseDatabaseModel
             }
             
             // Authors for this abstract
-            $html .= '<h4>' . Text::_('COM_CESESUBMITPROPOSAL_AUTHOR_LABEL') . '</h4>';
+            // Authors heading without numeric placeholder
+            $html .= '<h4>' . Text::_('COM_CESESUBMITPROPOSAL_AUTHORS_HEADING') . '</h4>';
             
             for ($i = 1; $i <= 4; $i++) {
                 $nameKey = ($abstractCount > 1) ? 'abstract' . $a . '_author' . $i . '_name' : 'author' . $i . '_name';
@@ -500,8 +502,13 @@ class ProposalModel extends BaseDatabaseModel
         if (!$params->get('enable_notifications', 1) || !$params->get('enable_confirmation_email', 1)) {
             return true;
         }
-        
-        $authorEmail = $data['author1_email'] ?? '';
+        // Determine correct first author email based on submission type
+        $submissionType = $data['submission_type'] ?? 'individual';
+        if ($submissionType === 'group') {
+            $authorEmail = $data['abstract1_author1_email'] ?? '';
+        } else {
+            $authorEmail = $data['author1_email'] ?? '';
+        }
         if (empty($authorEmail)) {
             return true;
         }
@@ -558,13 +565,31 @@ class ProposalModel extends BaseDatabaseModel
         $html .= '<p><strong>' . Text::_('COM_CESESUBMITPROPOSAL_EMAIL_ADMIN_ARTICLE_ID') . ':</strong> ' 
                  . $articleId . '</p>';
         
-        // Backend link
-        $backendUrl = Uri::root() . 'administrator/index.php?option=com_content&task=article.edit&id=' . $articleId;
-        $html .= '<p><strong>' . Text::_('COM_CESESUBMITPROPOSAL_EMAIL_ADMIN_BACKEND_LINK') . ':</strong> ' 
-                 . '<a href="' . $backendUrl . '">' . $backendUrl . '</a></p>';
+        // Frontend link (public view of proposal article)
+        try {
+            $db = $this->getDatabase();
+            $query = $db->getQuery(true)
+                ->select($db->quoteName(['alias','catid']))
+                ->from($db->quoteName('#__content'))
+                ->where($db->quoteName('id') . ' = ' . (int) $articleId);
+            $db->setQuery($query);
+            $articleRow = $db->loadAssoc();
+            if ($articleRow) {
+                $slug = $articleId . ':' . $articleRow['alias'];
+                $route = RouteHelper::getArticleRoute($slug, (int) $articleRow['catid']);
+                $frontendUrl = Uri::root() . ltrim($route, '/');
+                $html .= '<p><strong>' . Text::_('COM_CESESUBMITPROPOSAL_EMAIL_ADMIN_FRONTEND_LINK') . ':</strong> '
+                    . '<a href="' . $frontendUrl . '">' . $frontendUrl . '</a></p>';
+            }
+        } catch (\Exception $e) {
+            Log::add('Could not build frontend URL for article ' . $articleId . ': ' . $e->getMessage(), Log::WARNING, 'com_cesesubmitproposal');
+        }
         
+        // First author email depends on submission type
+        $submissionType = $data['submission_type'] ?? 'individual';
+        $firstAuthorEmail = ($submissionType === 'group') ? ($data['abstract1_author1_email'] ?? 'N/A') : ($data['author1_email'] ?? 'N/A');
         $html .= '<p><strong>' . Text::_('COM_CESESUBMITPROPOSAL_EMAIL_ADMIN_SUBMITTER_EMAIL') . ':</strong> ' 
-                 . htmlspecialchars($data['author1_email'] ?? 'N/A') . '</p>';
+             . htmlspecialchars($firstAuthorEmail) . '</p>';
         
         $html .= '<hr>';
         
