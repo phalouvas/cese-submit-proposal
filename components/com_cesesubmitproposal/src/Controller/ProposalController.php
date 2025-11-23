@@ -188,9 +188,12 @@ class ProposalController extends BaseController
         $app->setUserState('com_cesesubmitproposal.step2', null);
         
         // Store success data for display
+        $successEmail = ($completeData['submission_type'] ?? 'individual') === 'group'
+            ? ($completeData['abstract1_author1_email'] ?? '')
+            : ($completeData['author1_email'] ?? '');
         $app->setUserState('com_cesesubmitproposal.success', [
             'article_id' => $articleId,
-            'author_email' => $completeData['author1_email'] ?? ''
+            'author_email' => $successEmail
         ]);
         
         // Redirect to success page

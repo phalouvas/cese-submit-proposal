@@ -500,8 +500,13 @@ class ProposalModel extends BaseDatabaseModel
         if (!$params->get('enable_notifications', 1) || !$params->get('enable_confirmation_email', 1)) {
             return true;
         }
-        
-        $authorEmail = $data['author1_email'] ?? '';
+        // Determine correct first author email based on submission type
+        $submissionType = $data['submission_type'] ?? 'individual';
+        if ($submissionType === 'group') {
+            $authorEmail = $data['abstract1_author1_email'] ?? '';
+        } else {
+            $authorEmail = $data['author1_email'] ?? '';
+        }
         if (empty($authorEmail)) {
             return true;
         }
@@ -563,8 +568,11 @@ class ProposalModel extends BaseDatabaseModel
         $html .= '<p><strong>' . Text::_('COM_CESESUBMITPROPOSAL_EMAIL_ADMIN_BACKEND_LINK') . ':</strong> ' 
                  . '<a href="' . $backendUrl . '">' . $backendUrl . '</a></p>';
         
+        // First author email depends on submission type
+        $submissionType = $data['submission_type'] ?? 'individual';
+        $firstAuthorEmail = ($submissionType === 'group') ? ($data['abstract1_author1_email'] ?? 'N/A') : ($data['author1_email'] ?? 'N/A');
         $html .= '<p><strong>' . Text::_('COM_CESESUBMITPROPOSAL_EMAIL_ADMIN_SUBMITTER_EMAIL') . ':</strong> ' 
-                 . htmlspecialchars($data['author1_email'] ?? 'N/A') . '</p>';
+             . htmlspecialchars($firstAuthorEmail) . '</p>';
         
         $html .= '<hr>';
         
