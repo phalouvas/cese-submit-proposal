@@ -21,11 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     <property name="destdir" value="${basedir}/build/cesesubmitproposal-pkg"/>
     
-    <property name="old_version" value="1.0.2"/>
-    <property name="old_cdate" value="21-Nov-2025"/>
+    <property name="old_version" value="1.0.3"/>
+    <property name="old_cdate" value="22-Nov-2025"/>
     
-    <property name="version" value="1.0.3"/>
-    <property name="cdate" value="22-Nov-2025"/>
+    <property name="version" value="1.0.4"/>
+    <property name="cdate" value="24-Nov-2025"/>
     
     <target name="build" description="Create an installable package for the ${name} project" >
         <antcall target="fix_version_date"/>

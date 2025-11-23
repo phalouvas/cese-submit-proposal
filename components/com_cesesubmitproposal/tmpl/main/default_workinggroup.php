@@ -21,7 +21,8 @@ $workingGroups = [
     'wg3' => Text::_('COM_CESESUBMITPROPOSAL_WG3'),
     'wg4' => Text::_('COM_CESESUBMITPROPOSAL_WG4'),
     'wg5' => Text::_('COM_CESESUBMITPROPOSAL_WG5'),
-    'wg_new' => Text::_('COM_CESESUBMITPROPOSAL_WG6')
+    'WG6' => Text::_('COM_CESESUBMITPROPOSAL_WG6'),
+    'WG7' => Text::_('COM_CESESUBMITPROPOSAL_WG7')
 ];
 ?>
 <div class="working-group-selection mb-4">
