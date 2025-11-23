@@ -387,7 +387,8 @@ class ProposalModel extends BaseDatabaseModel
             }
             
             // Authors for this abstract
-            $html .= '<h4>' . Text::_('COM_CESESUBMITPROPOSAL_AUTHOR_LABEL') . '</h4>';
+            // Authors heading without numeric placeholder
+            $html .= '<h4>' . Text::_('COM_CESESUBMITPROPOSAL_AUTHORS_HEADING') . '</h4>';
             
             for ($i = 1; $i <= 4; $i++) {
                 $nameKey = ($abstractCount > 1) ? 'abstract' . $a . '_author' . $i . '_name' : 'author' . $i . '_name';
