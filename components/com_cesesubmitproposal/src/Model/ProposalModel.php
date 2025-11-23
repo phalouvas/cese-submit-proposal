@@ -19,6 +19,7 @@ use Joomla\CMS\Mail\MailHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Component\Content\Site\Helper\RouteHelper;
 
 /**
  * Proposal Model
@@ -564,10 +565,25 @@ class ProposalModel extends BaseDatabaseModel
         $html .= '<p><strong>' . Text::_('COM_CESESUBMITPROPOSAL_EMAIL_ADMIN_ARTICLE_ID') . ':</strong> ' 
                  . $articleId . '</p>';
         
-        // Backend link
-        $backendUrl = Uri::root() . 'administrator/index.php?option=com_content&task=article.edit&id=' . $articleId;
-        $html .= '<p><strong>' . Text::_('COM_CESESUBMITPROPOSAL_EMAIL_ADMIN_BACKEND_LINK') . ':</strong> ' 
-                 . '<a href="' . $backendUrl . '">' . $backendUrl . '</a></p>';
+        // Frontend link (public view of proposal article)
+        try {
+            $db = $this->getDatabase();
+            $query = $db->getQuery(true)
+                ->select($db->quoteName(['alias','catid']))
+                ->from($db->quoteName('#__content'))
+                ->where($db->quoteName('id') . ' = ' . (int) $articleId);
+            $db->setQuery($query);
+            $articleRow = $db->loadAssoc();
+            if ($articleRow) {
+                $slug = $articleId . ':' . $articleRow['alias'];
+                $route = RouteHelper::getArticleRoute($slug, (int) $articleRow['catid']);
+                $frontendUrl = Uri::root() . ltrim($route, '/');
+                $html .= '<p><strong>' . Text::_('COM_CESESUBMITPROPOSAL_EMAIL_ADMIN_FRONTEND_LINK') . ':</strong> '
+                    . '<a href="' . $frontendUrl . '">' . $frontendUrl . '</a></p>';
+            }
+        } catch (\Exception $e) {
+            Log::add('Could not build frontend URL for article ' . $articleId . ': ' . $e->getMessage(), Log::WARNING, 'com_cesesubmitproposal');
+        }
         
         // First author email depends on submission type
         $submissionType = $data['submission_type'] ?? 'individual';
