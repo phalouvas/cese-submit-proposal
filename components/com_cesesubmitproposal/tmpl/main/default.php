@@ -34,7 +34,7 @@ if ($step == 2) {
 <div class="cesesubmitproposal">
     <div class="row">
         <div class="col-12">
-            <h1><?php echo Text::_('COM_CESESUBMITPROPOSAL_STEP1_TITLE'); ?></h1>
+            <h1 class="text-danger"><?php echo Text::_('COM_CESESUBMITPROPOSAL_STEP1_TITLE'); ?></h1>
             
             <form action="<?php echo Route::_('index.php?option=com_cesesubmitproposal&task=proposal.saveStep1'); ?>" method="post" name="proposalForm" id="proposalForm">
                 
